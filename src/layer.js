@@ -35,7 +35,8 @@ export default class Layer extends Component {
   hover = [];
 
   identifier = this.props.id || generateID();
-  id = `layer-${this.identifier}`;
+  id = 'layer-' + this.identifier
+  // id = `layer-${this.identifier}`;
 
   source = new MapboxGl.GeoJSONSource({
     ...this.props.sourceOptions,
@@ -167,6 +168,16 @@ export default class Layer extends Component {
     return false;
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    const { id } = this;
+    const { map } = this.context;
+
+    const diffResult = diff(this.props.paint, nextProps.paint)
+    Object.keys(diffed).forEach(prop =>
+      map.setPaintProperty(id, prop, diffed[prop])
+    )
+  }
+
   render() {
     const children = [].concat(this.props.children);
 
@@ -182,4 +193,3 @@ export default class Layer extends Component {
     return null;
   }
 }
-
